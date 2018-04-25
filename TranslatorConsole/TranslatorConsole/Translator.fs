@@ -4,10 +4,10 @@ open System.Net
 open System.IO
 open System.Xml
 
-let translateTextAsync (word:string) =
+let translateTextAsync word language =
     async {
         try
-           let url = "https://api.microsofttranslator.com/V2/Http.svc/Translate?to=fr-fr&text=" + word;
+           let url = "https://api.microsofttranslator.com/V2/Http.svc/Translate?to=" + language + "&text=" + word;
            let key = "e8c7cdbe800b4b1faa502ebfd039e977"
            let request = WebRequest.Create(url)
            request.Headers.Add("Ocp-Apim-Subscription-Key", key)
