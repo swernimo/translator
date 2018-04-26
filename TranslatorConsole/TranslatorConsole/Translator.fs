@@ -28,7 +28,7 @@ let translateJsonDocument filePath subscriptionKey language=
                 | ex -> return "" //log the error
         }
     let doc = loadJsonDocument filePath
-    let translateFunc = translateTextAsync language subscriptionKey doc.Language    
+    let translateFunc = translateTextAsync language subscriptionKey doc.Language  
     let translatedMessages = doc.Messages |> Seq.map (fun pair -> pair.Key, translateFunc pair.Value |> Async.RunSynchronously) |> dict
     let newDoc:Document = {Language = language; Messages = translatedMessages;}
     newDoc

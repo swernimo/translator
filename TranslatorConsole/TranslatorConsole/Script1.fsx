@@ -17,5 +17,6 @@ let languages = [|
 let partialFunc = translateJsonDocument filePath "e8c7cdbe800b4b1faa502ebfd039e977"
 
 for lang in languages do
-    let translated = partialFunc lang    
-    writeDocumentToDisk translated |> ignore
+    let translated = partialFunc lang
+    let writeToPath = sprintf @"c:\users\swernimont\desktop\messages.%s.json" lang
+    writeDocumentToDisk translated writeToPath |> ignore

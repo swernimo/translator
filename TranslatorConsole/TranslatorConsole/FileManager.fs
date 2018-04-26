@@ -16,11 +16,10 @@ let loadJsonDocument filePath =
         jsonReader.Close()
         doc
     | false -> 
-        let doc : Document = { Language = "error"; Messages = new Dictionary<string,string>();}
+        let doc : Document = { Language = ""; Messages = new Dictionary<string,string>();}
         doc
   
-let writeDocumentToDisk (doc:Document) = 
-    let writeToPath = sprintf @"c:\users\swernimont\desktop\messages.%s.json" doc.Language
+let writeDocumentToDisk (doc:Document) (writeToPath:string) = 
     let writeToDisk doc = 
         use fileStream = new StreamWriter(writeToPath)
         let jsonText = JsonConvert.SerializeObject(doc)
