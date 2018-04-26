@@ -19,7 +19,8 @@ let loadJsonDocument filePath =
         let doc : Document = { Language = "error"; Messages = new Dictionary<string,string>();}
         doc
   
-let writeDocumentToDisk (writeToPath:string) (doc:Document) :unit = 
+let writeDocumentToDisk (doc:Document) = 
+    let writeToPath = sprintf @"c:\users\swernimont\desktop\messages.%s.json" doc.Language
     let writeToDisk doc = 
         use fileStream = new StreamWriter(writeToPath)
         let jsonText = JsonConvert.SerializeObject(doc)
@@ -32,5 +33,8 @@ let writeDocumentToDisk (writeToPath:string) (doc:Document) :unit =
     | true -> 
         writeToDisk doc
     | false ->
-        Directory.CreateDirectory(writeToPath) |> ignore
-        writeToDisk doc
+        try
+            Directory.CreateDirectory(writeToPath) |> ignore
+            writeToDisk doc
+        with
+        | ex -> ()//log the error & stop the program

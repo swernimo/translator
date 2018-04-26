@@ -7,10 +7,15 @@
 open Translator
 open FileManager
 
-//let filePath = "c:\users\swernimont\desktop\messages.en-us.json"
-
 let filePath = @"c:\users\swernimont\desktop\test.json"
 
-let translatedDocument = translateJsonDocument filePath "de" "e8c7cdbe800b4b1faa502ebfd039e977"
+let languages = [|
+    "de" 
+    "fr"
+    "es"|]
 
-writeDocumentToDisk @"c:\users\swernimont\desktop\messages.de.json" translatedDocument |> ignore
+let partialFunc = translateJsonDocument filePath "e8c7cdbe800b4b1faa502ebfd039e977"
+
+for lang in languages do
+    let translated = partialFunc lang    
+    writeDocumentToDisk translated |> ignore

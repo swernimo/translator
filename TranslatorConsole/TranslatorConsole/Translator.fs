@@ -6,8 +6,7 @@ open System.Xml
 open FileManager
 open Entities
 
-
-let translateJsonDocument filePath lanuage subscriptionKey =
+let translateJsonDocument filePath subscriptionKey lanuage=
 
     let translateTextAsync language subscrptionKey word =
         async {
@@ -26,7 +25,7 @@ let translateJsonDocument filePath lanuage subscriptionKey =
                request.Abort()
                return xml.FirstChild.InnerText
             with
-                | ex -> return "" //log the error //return "Error while trying to translate " + word + ". Exception Message: " + ex.Message
+                | ex -> return "" //log the error
         }
     
     let translateFunc = translateTextAsync lanuage subscriptionKey
