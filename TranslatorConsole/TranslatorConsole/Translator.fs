@@ -3,8 +3,9 @@
 open System.Net
 open System.IO
 open System.Xml
+open FileManager
 
-let translateTextAsync word language =
+let translateTextAsync language subscrptionKey word =
     async {
         try
            let url = "https://api.microsofttranslator.com/V2/Http.svc/Translate?to=" + language + "&text=" + word;
@@ -22,5 +23,11 @@ let translateTextAsync word language =
            request.Abort()
            return xml.FirstChild.InnerText
         with
-            | ex -> return "Error while trying to translate " + word + ". Exception Message: " + ex.Message
+            | ex -> return "" //log the error //return "Error while trying to translate " + word + ". Exception Message: " + ex.Message
     }
+
+let translateJsonDocument filePath lanuage subscriptionKey =
+    let translateFunc = translateTextAsync lanuage subscriptionKey
+    let dictionary = loadDictionaryFromJsonFile filePath
+    for pair in dictionary do
+        translateFunc pair.Value |> Async.RunSynchronously |> printfn "Original Word: %s. Translated Word: %s" pair.Value //need to create a json document that has header property for language and an array of key value pairs. pair.key is message lookup and does not get translated.
