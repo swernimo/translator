@@ -6,12 +6,12 @@ open System.Xml
 open FileManager
 open Entities
 
-let translateJsonDocument filePath subscriptionKey lanuage=
+let translateJsonDocument filePath subscriptionKey language=
 
-    let translateTextAsync language subscrptionKey word =
+    let translateTextAsync lng subscrptionKey sourceLanguage word =
         async {
             try
-               let url = "https://api.microsofttranslator.com/V2/Http.svc/Translate?to=" + language + "&text=" + word;
+               let url = sprintf "https://api.microsofttranslator.com/V2/Http.svc/Translate?to=%s&text=%s&from=%s" lng word sourceLanguage
                let request = WebRequest.Create(url)
                request.Headers.Add("Ocp-Apim-Subscription-Key", subscrptionKey)
                request.Method <- "GET"
@@ -27,9 +27,8 @@ let translateJsonDocument filePath subscriptionKey lanuage=
             with
                 | ex -> return "" //log the error
         }
-    
-    let translateFunc = translateTextAsync lanuage subscriptionKey
     let doc = loadJsonDocument filePath
+    let translateFunc = translateTextAsync language subscriptionKey doc.Language    
     let translatedMessages = doc.Messages |> Seq.map (fun pair -> pair.Key, translateFunc pair.Value |> Async.RunSynchronously) |> dict
-    let newDoc:Document = {Language = lanuage; Messages = translatedMessages;}
+    let newDoc:Document = {Language = language; Messages = translatedMessages;}
     newDoc
