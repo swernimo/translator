@@ -6,10 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Entities.fs" />
     <Compile Include="FileManager.fs" />
     <Compile Include="Translator.fs" />
-    <Compile Include="Program.fs" />
     <None Include="Script1.fsx" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>

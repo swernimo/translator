@@ -4,14 +4,14 @@ open System.Net
 open System.IO
 open System.Xml
 open FileManager
+open Entities
 
 let translateTextAsync language subscrptionKey word =
     async {
         try
            let url = "https://api.microsofttranslator.com/V2/Http.svc/Translate?to=" + language + "&text=" + word;
-           let key = "e8c7cdbe800b4b1faa502ebfd039e977"
            let request = WebRequest.Create(url)
-           request.Headers.Add("Ocp-Apim-Subscription-Key", key)
+           request.Headers.Add("Ocp-Apim-Subscription-Key", subscrptionKey)
            request.Method <- "GET"
            let response = request.GetResponseAsync()
            use reader = new StreamReader(response.Result.GetResponseStream())
@@ -28,6 +28,7 @@ let translateTextAsync language subscrptionKey word =
 
 let translateJsonDocument filePath lanuage subscriptionKey =
     let translateFunc = translateTextAsync lanuage subscriptionKey
-    let dictionary = loadDictionaryFromJsonFile filePath
-    for pair in dictionary do
-        translateFunc pair.Value |> Async.RunSynchronously |> printfn "Original Word: %s. Translated Word: %s" pair.Value //need to create a json document that has header property for language and an array of key value pairs. pair.key is message lookup and does not get translated.
+    let doc = loadJsonDocument filePath
+    let translatedMessages = doc.Messages |> Seq.map (fun pair -> pair.Key, translateFunc pair.Value |> Async.RunSynchronously) |> dict
+    let newDoc:Document = {Language = lanuage; Messages = translatedMessages;}
+    newDoc
