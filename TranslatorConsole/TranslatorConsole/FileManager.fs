@@ -18,3 +18,19 @@ let loadJsonDocument filePath =
     | false -> 
         let doc : Document = { Language = "error"; Messages = new Dictionary<string,string>();}
         doc
+  
+let writeDocumentToDisk (writeToPath:string) (doc:Document) :unit = 
+    let writeToDisk doc = 
+        use fileStream = new StreamWriter(writeToPath)
+        let jsonText = JsonConvert.SerializeObject(doc)
+        let jsonWriter = new JsonTextWriter(fileStream)
+        jsonWriter.WriteRaw(jsonText)
+        jsonWriter.Close()
+    
+    let info = new FileInfo(writeToPath)
+    match info.Directory.Exists with
+    | true -> 
+        writeToDisk doc
+    | false ->
+        Directory.CreateDirectory(writeToPath) |> ignore
+        writeToDisk doc
