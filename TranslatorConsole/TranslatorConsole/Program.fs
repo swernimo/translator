@@ -2,6 +2,7 @@
 open FileManager
 open Entities
 open CommandLine
+open Translator
 
 [<EntryPoint>]
 let main argv =
@@ -9,7 +10,23 @@ let main argv =
     match result with
     | :? Parsed<CommandOptions> as parsed -> 
         let options = parsed.Value
-        
+        let translationFunc = translateJsonDocument options.filePath options.key
+        options.languages |> Seq.iter (fun lang ->
+            match options.destination |> String.IsNullOrWhiteSpace with
+            | false ->
+                let writeDirectory = getDestinationFolderPath options.destination
+                let writePath = sprintf "%s\messages.%s.json" writeDirectory lang
+                translationFunc lang |> writeDocumentToDisk writePath
+            | true ->
+                let writeDirectory = getDestinationFolderPath options.filePath
+                let writePath = sprintf "%s\messages.%s.json" writeDirectory lang
+                translationFunc lang |> writeDocumentToDisk writePath
+            )        
         0        
-    | :? NotParsed<CommandOptions> as error -> -1    
-        //translateJsonDocument "c:\users\swernimont\desktop\messages.en-us.json" destinationLanguage "e8c7cdbe800b4b1faa502ebfd039e977" // |> saveJsonToFile
+    | :? NotParsed<CommandOptions> as error -> 
+        Console.Read() |> ignore
+        //write errors to console
+        -1
+    | _ ->
+        Console.Read() |> ignore
+        1

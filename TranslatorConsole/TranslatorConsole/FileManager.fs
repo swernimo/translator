@@ -16,10 +16,11 @@ let loadJsonDocument filePath =
         jsonReader.Close()
         doc
     | false -> 
+        invalidArg "file not found" |> ignore
         let doc : Document = { Language = ""; Messages = new Dictionary<string,string>();}
         doc
   
-let writeDocumentToDisk (doc:Document) (writeToPath:string) = 
+let writeDocumentToDisk (writeToPath:string) (doc:Document) = 
     let writeToDisk doc = 
         use fileStream = new StreamWriter(writeToPath)
         let jsonText = JsonConvert.SerializeObject(doc)
@@ -37,3 +38,12 @@ let writeDocumentToDisk (doc:Document) (writeToPath:string) =
             writeToDisk doc
         with
         | ex -> ()//log the error & stop the program
+
+let getDestinationFolderPath sourcepath = 
+    let fileInfo = new FileInfo (sourcepath)
+    match fileInfo.Exists with
+    | true ->
+        fileInfo.DirectoryName
+    | false ->
+        invalidArg "file not found" |> ignore
+        ""
