@@ -11,14 +11,13 @@ This is a .Net Core 2 console application that accepts a JSON file, calls the Mi
 ### Document format
 Your JSON file needs to have two (and only 2) elements. The first is a string that represents the country code for the original language. The second element is a sub element of key value pairs.
    
-   {
-	"language" : "en",
-	"Messages": 
-      {
-        "welcomeMessage" : "Welcome",
-        "myAccount" : "My Account",
-        "loginButton" : "Login"
-      }
+    {
+        "language" : "en",
+        "Messages": {
+            "welcomeMessage" : "Welcome",
+            "myAccount" : "My Account",
+            "loginButton" : "Login"
+        }
     }
 
 
