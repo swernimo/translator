@@ -4,9 +4,9 @@ This is a .Net Core 2 console application that accepts a JSON file, calls the Mi
 
 
 ### Required parameters:
-* --sourcePath  this is the path on disk to the JSON file that needs to be translated
-* --key  this is one of the keys from Azure for Translator Text API
-* --languages  this is a space seperated list of languages that you want to translate the source into. See [Microsoft Text Translator API][1] for a complete list of supported languages
+* --sourcePath  _this is the path on disk to the JSON file that needs to be translated_
+* --key  _this is one of the keys from Azure for Translator Text API_
+* --languages  _this is a space seperated list of languages that you want to translate the source into. See [Microsoft Text Translator API][1] for a complete list of supported languages_
 
 ### Runing the Translator
     dotnet run --key "abc123" --languages de fr es --sourcePath "c:\projects\myProject\originalMessage.json"
