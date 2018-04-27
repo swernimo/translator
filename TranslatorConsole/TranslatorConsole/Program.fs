@@ -8,21 +8,26 @@ open Translator
 let main argv =
     let result = Parser.Default.ParseArguments<CommandOptions>(argv)
     match result with
-    | :? Parsed<CommandOptions> as parsed -> 
-        let options = parsed.Value
-        let translationFunc = translateJsonDocument options.filePath options.key
-        options.languages |> Seq.iter (fun lang ->
-            match options.destination |> String.IsNullOrWhiteSpace with
-            | false ->
-                let writeDirectory = getDestinationFolderPath options.destination
-                let writePath = sprintf "%s\messages.%s.json" writeDirectory lang
-                translationFunc lang |> writeDocumentToDisk writePath
-            | true ->
-                let writeDirectory = getDestinationFolderPath options.filePath
-                let writePath = sprintf "%s\messages.%s.json" writeDirectory lang
-                translationFunc lang |> writeDocumentToDisk writePath
-            )        
-        0        
+    | :? Parsed<CommandOptions> as parsed ->
+        try
+            let options = parsed.Value
+            let translationFunc = translateJsonDocument options.filePath options.key
+            options.languages |> Seq.iter (fun lang ->
+                match options.destination |> String.IsNullOrWhiteSpace with
+                | false ->
+                    let writeDirectory = getDestinationFolderPath options.destination
+                    let writePath = sprintf "%s\messages.%s.json" writeDirectory lang
+                    translationFunc lang |> writeDocumentToDisk writePath
+                | true ->
+                    let writeDirectory = getDestinationFolderPath options.filePath
+                    let writePath = sprintf "%s\messages.%s.json" writeDirectory lang
+                    translationFunc lang |> writeDocumentToDisk writePath
+                )        
+            0
+        with
+        | ex -> 
+            printfn "An error occurred. Error message: %s" ex.Message
+            -1
     | :? NotParsed<CommandOptions> as error -> 
         Console.Read() |> ignore
         //write errors to console
