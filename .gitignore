@@ -287,5 +287,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-
-**/**/*.fsx
+#FSharp Script
+*.fsx
+**/Script1.fsx
