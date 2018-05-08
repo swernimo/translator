@@ -24,7 +24,12 @@ Your JSON file needs to have two (and only 2) elements. The first is a string th
     }
 
 
-### Output Folder
-The app will output one new file for each language in the same folder as the source. For example if the source path is c:\temp\labels.json and the languages of de, es, and fr are supplied. The app will output 3 new files to c:\temp named messages.de.json, messages.es.json, and messages.fr.json, respectively.
+### Output
+
+#### Folder
+The translated files will be output to the same folder as the source input file.
+
+#### File Names
+Their will be one translated file for each new language with the same name as the input file, but with the language code appended to the end. For example, if the source file is called labels.json and the languages are german, spanish, and french then there will be 3 output files called labels.de.json, labels.es.json, and labels.fr.json.
 
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/translator/languages/
