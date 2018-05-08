@@ -6,8 +6,7 @@ open System.Xml
 open FileManager
 open Entities
 
-let translateJsonDocument filePath subscriptionKey language=
-
+let translateJsonDocument filePath subscriptionKey language =
     let translateTextAsync lng subscrptionKey sourceLanguage word =
         async {
             try
