@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>0.1</version>
+    <title>JSON Text Translator</title>
+    <authors>Sean Wernimont</authors>
+    <owners>Sean Wernimont</owners>
+    <licenseUrl>https://github.com/swernimo/translator/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/swernimo/translator</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This is a .Net Core 2 console application that accepts a JSON file, calls the Microsoft Text Translator API in Azure and writes translated files to disk.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>F# Azure JSON Text-Translator</tags>
+  </metadata>
+</package>
