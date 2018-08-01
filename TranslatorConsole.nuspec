@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>JSONTranslator</id>
     <version>0.1</version>
     <title>JSON Text Translator</title>
     <authors>Sean Wernimont</authors>
