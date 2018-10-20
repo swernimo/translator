@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/theblindsquirrel/TheBlindSquirrel/_apis/build/status/JSON%20Translator)](https://dev.azure.com/theblindsquirrel/TheBlindSquirrel/_build/latest?definitionId=5)
+[![Build status](https://dev.azure.com/theblindsquirrel/TheBlindSquirrel/_apis/build/status/JSON%20Translator)](https://dev.azure.com/theblindsquirrel/TheBlindSquirrel/_build/latest?definitionId=1)
 
 # JSON Document Translator
 
