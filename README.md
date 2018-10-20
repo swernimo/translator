@@ -1,3 +1,5 @@
+[![Build status](https://dev.azure.com/theblindsquirrel/TheBlindSquirrel/_apis/build/status/JSON%20Translator)](https://dev.azure.com/theblindsquirrel/TheBlindSquirrel/_build/latest?definitionId=1)
+
 # JSON Document Translator
 
 This is a .Net Core 2 console application that accepts a JSON file, calls the Microsoft Text Translator API in Azure and writes translated files to disk.
