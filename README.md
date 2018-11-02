@@ -5,13 +5,16 @@
 This is a .Net Core 2 console application that accepts a JSON file, calls the Microsoft Text Translator API in Azure and writes translated files to disk.
 
 
-### Required parameters:
+### Required Parameters:
 * --sourcePath  _this is the path on disk to the JSON file that needs to be translated_
 * --key  _this is one of the Ocp-Apim-Subscription-Key from Azure for Translator Text API_
 * --languages  _this is a space seperated list of languages that you want to translate the source into. See [Microsoft Text Translator API][1] for a complete list of supported languages_
 
+### Optional Parameters:
+* --sourceLanguage _this is the original language of the document. if it is omitted english (en) will be used_
+
 ### Runing the Translator
-    dotnet run --key "abc123" --languages de fr es --sourcePath "c:\projects\myProject\originalMessage.json"
+    dotnet run --key "abc123" --languages de fr es --sourcePath "c:\projects\myProject\originalMessage.json" --sourceLanguage en
 
 ### Document format
 Your JSON file needs to have two (and only 2) elements. The first is a string that represents the country code for the original language. The second element is a sub element of key value pairs.
