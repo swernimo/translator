@@ -4,8 +4,7 @@ open System.Collections.Generic
 open CommandLine
 
 type Document = {
-    Language:string
-    Messages: IDictionary<string,string>
+    Messages: seq<IDictionary<string,string>>
 }
 
  type CommandOptions = {
