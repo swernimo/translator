@@ -1,6 +1,11 @@
+Release Status
 [![Build status](https://dev.azure.com/theblindsquirrel/JSON%20Translator/_apis/build/status/JSON%20Translator%20-%20Master)](https://dev.azure.com/theblindsquirrel/JSON%20Translator/_build/latest?definitionId=1)
 
 [![](https://vsrm.dev.azure.com/theblindsquirrel/_apis/public/Release/badge/de913588-44d8-4c40-8623-b8b76e68431a/4/4)](https://vsrm.dev.azure.com/theblindsquirrel/_apis/public/Release/badge/de913588-44d8-4c40-8623-b8b76e68431a/4/4)
+
+Develop Build Status
+[![Build status](https://dev.azure.com/TheBlindSquirrel/JSON%20Translator/_apis/build/status/JSON%20Translator%20-%20Develop)](https://dev.azure.com/TheBlindSquirrel/JSON%20Translator/_build/latest?definitionId=5)
+
 
 # JSON Document Translator
 
@@ -37,4 +42,3 @@ The translated files will be output to the same folder as the source input file.
 Their will be one translated file for each new language with the same name as the input file, but with the language code appended to the end. For example, if the source file is called labels.json and the languages are german, spanish, and french then there will be 3 output files called labels.de.json, labels.es.json, and labels.fr.json.
 
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/translator/languages/
-[2]:https://vsrm.dev.azure.com/theblindsquirrel/_apis/public/Release/badge/de913588-44d8-4c40-8623-b8b76e68431a/4/4

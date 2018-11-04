@@ -3,6 +3,19 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>JSONTranslator</PackageId>
+    <Version>0.1</Version>
+    <Authors>Sean Wernimont</Authors>
+    <Product>JSONTranslator</Product>
+    <Description>This is a .Net Core 2 console application that accepts a JSON file, calls the Microsoft Text Translator API in Azure and writes translated files to disk.</Description>
+    <Copyright>2018</Copyright>
+    <PackageLicenseUrl>https://github.com/swernimo/translator/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/swernimo/translator</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/swernimo/translator</RepositoryUrl>
+    <PackageTags>Fsharp Azure JSON Text-Translator</PackageTags>
+    <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
+    <AssemblyName>JSONTranslator</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
