@@ -47,12 +47,12 @@ let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLan
             let ending = getEndingString line
             match ending with
             | "{" | "}" | "}," ->
-                writer.WriteLine(line)
+                writer.WriteLine(l)
             | "," -> 
                 let split = line.Split(':')
                 let word = split.[1].TrimEnd(',')
                 let translated = translateFunc word |> Async.RunSynchronously
-                let newLine = String.Format("{0}:{1},", split.[0], translated)
+                let newLine = String.Format("\"{0}\":\"{1}\",", split.[0], translated.Trim())
                 writer.WriteLine(newLine)
             | _ ->
                 match Regex.Match(ending, "[A-Za-z]").Success with
@@ -60,11 +60,11 @@ let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLan
                     let split = line.Split(':')
                     let word = split.[1].TrimEnd(',')
                     let translated = translateFunc word |> Async.RunSynchronously
-                    let newLine = String.Format("{0}:{1}", split.[0], translated)
+                    let newLine = String.Format("\"{0}\":\"{1}\"", split.[0], translated.Trim())
                     writer.WriteLine(newLine)
                 | false ->
                     //ends in a number or special character don't translate
-                    writer.WriteLine(line)
+                    writer.WriteLine(l)
         )
         ()
     | false -> 
