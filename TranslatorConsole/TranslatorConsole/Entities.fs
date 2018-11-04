@@ -1,11 +1,6 @@
 ﻿module Entities
 
-open System.Collections.Generic
 open CommandLine
-
-type Document = {
-    Messages: seq<IDictionary<string,string>>
-}
 
  type CommandOptions = {
     [<Option("sourcePath", Required = true, HelpText = "Path to source file")>] filePath: string;
