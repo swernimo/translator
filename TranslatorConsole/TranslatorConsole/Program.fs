@@ -11,14 +11,14 @@ let main argv =
     | :? Parsed<CommandOptions> as parsed ->
         try
             let options = parsed.Value
-            let originalDoc = loadJsonDocument options.filePath
-            let translationFunc = translateJsonDocument options.filePath options.key
+            let sourceLanguage = options.sourceLanguage
+            let translationFunc = translateJsonDocument options.filePath options.key sourceLanguage
             options.languages |> Seq.iter (fun lang ->
                 let writeDirectory = getDestinationFolderPath options.filePath
-                let fileName = getInputFileName options.filePath originalDoc.Language
+                let fileName = getInputFileName options.filePath sourceLanguage
                 let writePath = sprintf "%s\%s.%s.json" writeDirectory fileName lang
-                translationFunc lang |> writeDocumentToDisk writePath
-                )        
+                translationFunc lang writePath
+                )
             0
         with
         | ex -> 

@@ -1,12 +1,12 @@
 ﻿module Translator
 
+open System
 open System.Net
 open System.IO
 open System.Xml
-open FileManager
-open Entities
+open System.Text.RegularExpressions
 
-let translateJsonDocument filePath subscriptionKey language =
+let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLanguage (destinationFilePath:string) =
     let translateTextAsync lng subscrptionKey sourceLanguage word =
         async {
             try
@@ -26,8 +26,47 @@ let translateJsonDocument filePath subscriptionKey language =
             with
                 | ex -> return "" //log the error
         }
-    let doc = loadJsonDocument filePath
-    let translateFunc = translateTextAsync language subscriptionKey doc.Language  
-    let translatedMessages = doc.Messages |> Seq.map (fun pair -> pair.Key, translateFunc pair.Value |> Async.RunSynchronously) |> dict
-    let newDoc:Document = {Language = language; Messages = translatedMessages;}
-    newDoc
+    
+    let getEndingString (line:string) =
+        let trimmed = line.Trim()
+        match trimmed.Length with
+        | 0 ->
+            String.Empty
+        | 1 | 2 ->
+            trimmed
+        | _ ->
+            trimmed.Chars(trimmed.Length - 1).ToString()            
+
+    let translateFunc = translateTextAsync destinationLanguage subscriptionKey sourceLanguage
+    let fileInfo = new FileInfo(filePath)
+    match fileInfo.Exists with
+    | true -> 
+        use writer = new StreamWriter(destinationFilePath);
+        File.ReadAllLines(filePath) |> Seq.iter(fun (l:string) -> 
+            let line = l.Replace("\\", String.Empty).Replace("\"", String.Empty).Trim()
+            let ending = getEndingString line
+            match ending with
+            | "{" | "}" | "}," ->
+                writer.WriteLine(l)
+            | "," -> 
+                let split = line.Split(':')
+                let word = split.[1].TrimEnd(',')
+                let translated = translateFunc word |> Async.RunSynchronously
+                let newLine = String.Format("\"{0}\":\"{1}\",", split.[0], translated.Trim())
+                writer.WriteLine(newLine)
+            | _ ->
+                match Regex.Match(ending, "[A-Za-z]").Success with
+                | true ->
+                    let split = line.Split(':')
+                    let word = split.[1].TrimEnd(',')
+                    let translated = translateFunc word |> Async.RunSynchronously
+                    let newLine = String.Format("\"{0}\":\"{1}\"", split.[0], translated.Trim())
+                    writer.WriteLine(newLine)
+                | false ->
+                    //ends in a number or special character don't translate
+                    writer.WriteLine(l)
+        )
+        ()
+    | false -> 
+        ()
+    ()
