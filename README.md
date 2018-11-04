@@ -1,9 +1,11 @@
-Release Status
+### Release Status
+
 [![Build status](https://dev.azure.com/theblindsquirrel/JSON%20Translator/_apis/build/status/JSON%20Translator%20-%20Master)](https://dev.azure.com/theblindsquirrel/JSON%20Translator/_build/latest?definitionId=1)
 
 [![](https://vsrm.dev.azure.com/theblindsquirrel/_apis/public/Release/badge/de913588-44d8-4c40-8623-b8b76e68431a/4/4)](https://vsrm.dev.azure.com/theblindsquirrel/_apis/public/Release/badge/de913588-44d8-4c40-8623-b8b76e68431a/4/4)
 
-Develop Build Status
+### Develop Build Status
+
 [![Build status](https://dev.azure.com/TheBlindSquirrel/JSON%20Translator/_apis/build/status/JSON%20Translator%20-%20Develop)](https://dev.azure.com/TheBlindSquirrel/JSON%20Translator/_build/latest?definitionId=5)
 
 
@@ -12,25 +14,91 @@ Develop Build Status
 This is a .Net Core 2 console application that accepts a JSON file, calls the Microsoft Text Translator API in Azure and writes translated files to disk.
 
 
-### Required parameters:
+### Required Parameters:
 * --sourcePath  _this is the path on disk to the JSON file that needs to be translated_
 * --key  _this is one of the Ocp-Apim-Subscription-Key from Azure for Translator Text API_
 * --languages  _this is a space seperated list of languages that you want to translate the source into. See [Microsoft Text Translator API][1] for a complete list of supported languages_
 
+### Optional Parameters:
+* --sourceLanguage _this is the original language of the document. if it is omitted english (en) will be used_
+
 ### Runing the Translator
-    dotnet run --key "abc123" --languages de fr es --sourcePath "c:\projects\myProject\originalMessage.json"
+    dotnet run --key "abc123" --languages de fr es --sourcePath "c:\projects\myProject\originalMessage.json" --sourceLanguage en
 
 ### Document format
-Your JSON file needs to have two (and only 2) elements. The first is a string that represents the country code for the original language. The second element is a sub element of key value pairs.
-   
+Minified JSON files are not currently supported. The JSON file can be a single object or contain subobjects. New in version 2 you are no longer required to have language specified in your document. You can now set the source language through the command line. Below are examples of different valid schemas that have been translated into Spanish.
+
+Schema 1
+
     {
-        "language" : "en",
+        "Language" : "english",
         "Messages": {
-            "welcomeMessage" : "Welcome",
-            "myAccount" : "My Account",
-            "loginButton" : "Login"
+            "anniversary.rollupMultipleEmployees": "Employees have Anniversaries on",
+            "anniversary.rollupSingleEmployee": "Employee has an Anniversary on",
+            "anniversary.singleHas": "has a",
+            "anniversary.singleWorkAnniversary": "Year Work Anniversary on"
         }
     }
+
+outputs as
+
+    {
+        "Language ":"Inglés",
+        "Messages": {
+            "anniversary.rollupMultipleEmployees":"Los empleados tienen aniversarios",
+            "anniversary.rollupSingleEmployee":"Empleado tiene un aniversario",
+            "anniversary.singleHas":"tiene un",
+            "anniversary.singleWorkAnniversary":"Aniversario de trabajo en"
+        }
+    }
+
+
+
+Schema 2
+
+    {
+        "Language" : "english",
+        "anniversary.rollupMultipleEmployees": "Employees have Anniversaries on",
+        "anniversary.rollupSingleEmployee": "Employee has an Anniversary on",
+        "anniversary.singleHas": "has a",
+        "anniversary.singleWorkAnniversary": "Year Work Anniversary on"
+    }
+
+outputs as
+
+    {
+        "Language ":"Inglés",
+        "anniversary.rollupMultipleEmployees":"Los empleados tienen aniversarios",
+        "anniversary.rollupSingleEmployee":"Empleado tiene un aniversario",
+        "anniversary.singleHas":"tiene un",
+        "anniversary.singleWorkAnniversary":"Aniversario de trabajo en"
+    }
+
+
+Schema 3
+
+    {
+        "Messages": {
+            "anniversary.rollupMultipleEmployees": "Employees have Anniversaries on",
+            "anniversary.rollupSingleEmployee": "Employee has an Anniversary on",
+            "subObject2" : {
+                "lookup" : "message"
+            }
+        }
+    }
+
+outputs as
+
+    {
+        "Messages": {
+        "anniversary.rollupMultipleEmployees":"Los empleados tienen aniversarios",
+        "anniversary.rollupSingleEmployee":"Empleado tiene un aniversario",
+            "subObject2" : {
+                "lookup ":"Mensaje"
+            }
+        }
+    }
+
 
 
 ### Output
