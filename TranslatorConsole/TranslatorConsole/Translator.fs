@@ -6,7 +6,7 @@ open System.IO
 open System.Xml
 open System.Text.RegularExpressions
 
-let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLanguage =
+let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLanguage (destinationFilePath:string) =
     let translateTextAsync lng subscrptionKey sourceLanguage word =
         async {
             try
@@ -41,9 +41,8 @@ let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLan
     let fileInfo = new FileInfo(filePath)
     match fileInfo.Exists with
     | true -> 
-        use writer = new StreamWriter(@"C:\Users\swernimont\Desktop\languages\es.json");
-        let lines = File.ReadAllLines(filePath)
-        lines |> Seq.iter(fun (l:string) -> 
+        use writer = new StreamWriter(destinationFilePath);
+        File.ReadAllLines(filePath) |> Seq.iter(fun (l:string) -> 
             let line = l.Replace("\\", String.Empty).Replace("\"", String.Empty).Trim()
             let ending = getEndingString line
             match ending with
@@ -64,8 +63,8 @@ let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLan
                     let newLine = String.Format("{0}:{1}", split.[0], translated)
                     writer.WriteLine(newLine)
                 | false ->
-                    //no idea how it would get to here
-                    () 
+                    //ends in a number or special character don't translate
+                    writer.WriteLine(line)
         )
         ()
     | false -> 

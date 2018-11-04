@@ -17,8 +17,7 @@ let main argv =
                 let writeDirectory = getDestinationFolderPath options.filePath
                 let fileName = getInputFileName options.filePath sourceLanguage
                 let writePath = sprintf "%s\%s.%s.json" writeDirectory fileName lang
-                //translationFunc lang |> writeDocumentToDisk writePath
-                translationFunc lang
+                translationFunc lang writePath
                 )
             0
         with
