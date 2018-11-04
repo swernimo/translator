@@ -2,40 +2,51 @@
 
 open System.IO;
 open Newtonsoft.Json
-open System.Collections.Generic
-open Entities
+open Newtonsoft.Json.Linq
 
-let loadJsonDocument filePath =
-    let fileInfo = new FileInfo(filePath)
-    match fileInfo.Exists with
-    | true -> 
-        use fileStream = new StreamReader(filePath)
-        let jsonReader = new JsonTextReader(fileStream)
-        let jsonSerialize = new Newtonsoft.Json.JsonSerializer()
-        let doc = jsonSerialize.Deserialize<Document>(jsonReader)
-        jsonReader.Close()
-        doc
-    | false -> 
-        invalidArg "file not found" |> ignore
-        let doc : Document = { Language = ""; Messages = new Dictionary<string,string>();}
-        doc
+//let loadJsonDocument filePath =
+//    let fileInfo = new FileInfo(filePath)
+//    match fileInfo.Exists with
+//    | true -> 
+//        use fileStream = new StreamReader(filePath)
+//        let line = fileStream.ReadLine().Trim()
+//        match line.EndsWith('{') with
+//        | true ->
+//            //write this line back to the file, do not translate it
+//            ()
+//        | false ->
+//            //check if it ends with ,
+//            ()
+//        //let jsonReader = new JsonTextReader(fileStream)
+//        //let jsonSerialize = new Newtonsoft.Json.JsonSerializer()
+//        //let jobj = jsonSerialize.Deserialize<JObject>(jsonReader)
+//        //jsonReader.Close()
+//        //jobj
+//        ()
+//    | false -> 
+//        ()
+        //invalidArg "file not found" |> ignore
+        //let nil = new JObject();
+        //nil
   
-let writeDocumentToDisk (writeToPath:string) (doc:Document) = 
-    let writeToDisk doc = 
-        use fileStream = new StreamWriter(writeToPath)
-        let jsonText = JsonConvert.SerializeObject(doc)
-        let jsonWriter = new JsonTextWriter(fileStream)
-        jsonWriter.WriteRaw(jsonText)
-        jsonWriter.Close()
+let writeDocumentToDisk (writeToPath:string) (line) = 
+    let writeToDisk (line:string) = 
+        use fileStream = new StreamWriter(writeToPath, true)
+        fileStream.WriteLine(line)
+        ()
+        //let jsonText = JsonConvert.SerializeObject(doc)
+        //let jsonWriter = new JsonTextWriter(fileStream)
+        //jsonWriter.WriteRaw(jsonText)
+        //jsonWriter.Close()
     
     let info = new FileInfo(writeToPath)
     match info.Directory.Exists with
     | true -> 
-        writeToDisk doc
+        writeToDisk line
     | false ->
         try
             Directory.CreateDirectory(writeToPath) |> ignore
-            writeToDisk doc
+            writeToDisk line
         with
         | ex -> ()//log the error & stop the program
 
