@@ -27,6 +27,16 @@ let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLan
                 | ex -> return "" //log the error
         }
     
+    let getEndingString (line:string) =
+        let trimmed = line.Trim()
+        match trimmed.Length with
+        | 0 ->
+            String.Empty
+        | 1 | 2 ->
+            trimmed
+        | _ ->
+            trimmed.Chars(trimmed.Length - 1).ToString()            
+
     let translateFunc = translateTextAsync destinationLanguage subscriptionKey sourceLanguage
     let fileInfo = new FileInfo(filePath)
     match fileInfo.Exists with
@@ -35,68 +45,29 @@ let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLan
         let lines = File.ReadAllLines(filePath)
         lines |> Seq.iter(fun (l:string) -> 
             let line = l.Replace("\\", String.Empty).Replace("\"", String.Empty).Trim()
-            match line.EndsWith('{') with
-            | true ->
+            let ending = getEndingString line
+            match ending with
+            | "{" | "}" | "}," ->
                 writer.WriteLine(line)
-            | false ->
-                match line.EndsWith("},") with
+            | "," -> 
+                let split = line.Split(':')
+                let word = split.[1].TrimEnd(',')
+                let translated = translateFunc word |> Async.RunSynchronously
+                let newLine = String.Format("{0}:{1},", split.[0], translated)
+                writer.WriteLine(newLine)
+            | _ ->
+                match Regex.Match(ending, "[A-Za-z]").Success with
                 | true ->
-                    writer.WriteLine(line)
+                    let split = line.Split(':')
+                    let word = split.[1].TrimEnd(',')
+                    let translated = translateFunc word |> Async.RunSynchronously
+                    let newLine = String.Format("{0}:{1}", split.[0], translated)
+                    writer.WriteLine(newLine)
                 | false ->
-                    match line.EndsWith(',') with
-                    |true ->                    
-                        let split = line.Split(':')
-                        let word = split.[1].TrimEnd(',')
-                        let translated = translateFunc word |> Async.RunSynchronously
-                        let newLine = String.Format("{0}:{1},", split.[0], translated)
-                        writer.WriteLine(newLine)
-                    |false ->
-                        match line.EndsWith('}') with
-                        |true ->
-                            writer.WriteLine(line)
-                        |false ->
-                            let lastChar = line.Chars(line.Length - 1).ToString().ToLower()
-                            match Regex.Match(lastChar, "[A-Za-z]").Success with
-                            | true ->
-                                let split = line.Split(':')
-                                let word = split.[1].TrimEnd(',')
-                                let translated = translateFunc word |> Async.RunSynchronously
-                                let newLine = String.Format("{0}:{1},", split.[0], translated)
-                                writer.WriteLine(newLine)
-                            | false ->
-                                //no idea how it would get to here
-                                () 
+                    //no idea how it would get to here
+                    () 
         )
         ()
     | false -> 
         ()
     ()
-    (*
-    let jObj = loadJsonDocument filePath
-    let translateFunc = translateTextAsync destinationLanguage subscriptionKey sourceLanguage
-    let newObj = jObj.DeepClone()
-    let writer = new JTokenWriter()
-    let rec parseJToken (token:JToken) =   
-        match token.Type with
-        | JTokenType.String ->
-            //let tokenValue = token.Value<string>()
-            //let translated = translateFunc tokenValue |> Async.RunSynchronously
-            let translated = "translated text"
-            let newToken = token
-            let reader = newToken.CreateReader()
-            writer.WriteValue(translated)
-            writer.WriteToken(reader)
-            let t = writer.Token
-            ()
-        | JTokenType.Object ->
-            token.Children() |> Seq.iter (fun t -> parseJToken t)
-        | JTokenType.Property ->
-            token.ToObject<JProperty>().Value |> parseJToken            
-        | _ ->
-            ()
-    
-    for p in jObj do
-        parseJToken p.Value
-
-    newObj
-    *)
