@@ -13,6 +13,15 @@
 
 This is a .Net Core 2 console application that accepts a JSON file, calls the Microsoft Text Translator API in Azure and writes translated files to disk.
 
+### Installation
+To install via nuget package manager 
+    
+    Install-Package JSONTranslator
+
+To install via .Net Core CLi
+
+    dotnet add package JSONTranslator
+
 
 ### Required Parameters:
 * --sourcePath  _this is the path on disk to the JSON file that needs to be translated_
@@ -107,6 +116,6 @@ outputs as
 The translated files will be output to the same folder as the source input file.
 
 #### File Names
-Their will be one translated file for each new language with the same name as the input file, but with the language code appended to the end. For example, if the source file is called labels.json and the languages are german, spanish, and french then there will be 3 output files called labels.de.json, labels.es.json, and labels.fr.json.
+There will be one translated file for each new language. If the original file name does not contain the language (ie labels.json) then each new file will be appended with the language. For example if the original file was labels.json and the languages are Spanish and French, the output files will be labels.es.json and labels.fr.json. Additionally, if the original filename was only the language (ie en.json) then the output filenames will be the languages. So if the input file was en.json and the languages were German and Polish then the new files will be de.json and pl.json.
 
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/translator/languages/
