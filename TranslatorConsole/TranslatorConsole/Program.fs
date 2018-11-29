@@ -16,7 +16,7 @@ let main argv =
             options.languages |> Seq.iter (fun lang ->
                 let writeDirectory = getDestinationFolderPath options.filePath
                 let fileName = getInputFileName options.filePath sourceLanguage
-                let writePath = sprintf "%s\%s.%s.json" writeDirectory fileName lang
+                let writePath = sprintf "%s\%s%s.json" writeDirectory fileName lang
                 translationFunc lang writePath
                 )
             0
