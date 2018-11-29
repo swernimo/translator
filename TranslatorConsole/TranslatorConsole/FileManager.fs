@@ -19,9 +19,13 @@ let getInputFileName filePath (language:string) =
         let lang = sprintf ".%s" language
         match fileName.Contains(lang) with 
         | true ->
-            fileName.Replace(lang, "")
+            fileName.Replace(lang, "") + "."
         | false ->
-            fileName
+            match fileName.ToLower().Equals(language.ToLower()) with
+            | true ->
+                ""
+            | false ->
+                fileName + "."      
     | false ->
         invalidArg "file not found" |> ignore
         ""
