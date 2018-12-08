@@ -22,8 +22,8 @@
     <Compile Include="Entities.fs" />
     <Compile Include="FileManager.fs" />
     <Compile Include="Translator.fs" />
-    <None Include="Script1.fsx" />
     <Compile Include="Program.fs" />
+    <None Include="Script.fsx" />
   </ItemGroup>
 
   <ItemGroup>
