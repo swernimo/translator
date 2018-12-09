@@ -1,6 +1,7 @@
 ﻿module FileManager
 
 open System.IO;
+open System.Text.RegularExpressions
 
 let getDestinationFolderPath sourcepath = 
     let fileInfo = new FileInfo (sourcepath)
@@ -53,3 +54,24 @@ let writeToFile filePath (textToWrite:string) =
     use writer = new StreamWriter(filePath, true)
     writer.WriteLine(textToWrite)
     writer.Close()
+
+let getOutputFiles sourceLanguage destinationLanguages inputFilePath =
+    let fileInfo = new FileInfo(inputFilePath)
+    let fileName = fileInfo.Name.Replace(fileInfo.Extension, "")
+    match fileName.Contains(sprintf ".%s" sourceLanguage) with
+    | true ->
+        let regexPattern = sprintf ".%s[A-Za-z]" sourceLanguage
+        match Regex.Match(fileName, regexPattern).Success with
+        | true ->
+            destinationLanguages |> Array.map (fun dl -> sprintf "%s/%s.%s.json" fileInfo.DirectoryName fileName dl)
+        | false ->
+            destinationLanguages |> Array.map (fun dl ->
+                let outputFileName = fileName.Replace(sprintf ".%s" sourceLanguage, sprintf ".%s" dl)
+                sprintf "%s/%s.json" fileInfo.DirectoryName outputFileName
+                )
+    | false ->
+        match fileName.ToLower().Equals(sourceLanguage.ToLower()) with
+        | true ->
+            destinationLanguages |> Array.map (fun dl -> sprintf "%s/%s.json" fileInfo.DirectoryName dl)
+        | false ->
+            destinationLanguages |> Array.map (fun dl -> sprintf "%s/%s.%s.json" fileInfo.DirectoryName fileName dl)
