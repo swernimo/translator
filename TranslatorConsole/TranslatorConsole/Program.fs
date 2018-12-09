@@ -12,13 +12,26 @@ let main argv =
         try
             let options = parsed.Value
             let sourceLanguage = options.sourceLanguage
-            let translationFunc = translateJsonDocument options.filePath options.key sourceLanguage
-            options.languages |> Seq.iter (fun lang ->
-                let writeDirectory = getDestinationFolderPath options.filePath
-                let fileName = getInputFileName options.filePath sourceLanguage
-                let writePath = sprintf "%s\%s%s.json" writeDirectory fileName lang
-                translationFunc lang writePath
-                )
+            let lines = getInputFileText options.filePath
+            let outputPaths = getOutputFiles sourceLanguage options.languages options.filePath
+            let translationFunc = getTranslations sourceLanguage options.languages options.key
+            lines |> Array.iter (fun line ->
+                match lineNeedsToBeTranslated line with 
+                | true ->
+                    let split = line.Split(':')
+                    let firstPart = sprintf "\"%s\":" split.[0]
+                    let wordToTranslate = split.[1].Replace("\"", "")
+                    match wordToTranslate.EndsWith(",") with
+                    | true ->
+                        let newWord = wordToTranslate.Substring(0, wordToTranslate.Length - 1)
+                        let translations = translationFunc [|newWord|]
+                        writeTranslationsToDisk outputPaths translations
+                    | false ->
+                        let translations = translationFunc [|wordToTranslate|]
+                        writeTranslationsToDisk outputPaths translations
+                | false ->
+                    outputPaths |> Seq.iter (fun path -> writeToFile path line)
+            )
             0
         with
         | ex -> 
