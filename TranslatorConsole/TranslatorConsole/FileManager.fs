@@ -29,3 +29,27 @@ let getInputFileName filePath (language:string) =
     | false ->
         invalidArg "file not found" |> ignore
         ""
+
+let getInputFileText filePath  =
+    let fileInfo = new FileInfo(filePath)
+    match fileInfo.Exists with
+    | true ->
+        File.ReadAllLines(filePath)
+    | false ->
+        invalidArg "file not found" |> ignore
+        [|""|]
+ 
+let createFileIfDoesNotExist filePath =
+    let fileInfo = new FileInfo(filePath)
+    match fileInfo.Exists with
+    | true ->
+        ()
+    | false ->
+        use stream = File.Create(filePath)
+        stream.Close()
+
+let writeToFile filePath (textToWrite:string) = 
+    createFileIfDoesNotExist filePath
+    use writer = new StreamWriter(filePath, true)
+    writer.WriteLine(textToWrite)
+    writer.Close()
