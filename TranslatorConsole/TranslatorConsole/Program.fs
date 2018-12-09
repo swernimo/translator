@@ -19,7 +19,7 @@ let main argv =
                 match lineNeedsToBeTranslated line with 
                 | true ->
                     let split = line.Split(':')
-                    let firstPart = sprintf "\"%s\":" (split.[0].Replace("\"", ""))
+                    let firstPart = sprintf "\"%s\":" (split.[0].Replace("\"", "").Trim())
                     let wordToTranslate = split.[1].Replace("\"", "")
                     match wordToTranslate.EndsWith(",") with
                     | true ->
