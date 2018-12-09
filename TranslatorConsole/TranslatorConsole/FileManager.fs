@@ -2,34 +2,7 @@
 
 open System.IO;
 open System.Text.RegularExpressions
-
-let getDestinationFolderPath sourcepath = 
-    let fileInfo = new FileInfo (sourcepath)
-    match fileInfo.Exists with
-    | true ->
-        fileInfo.DirectoryName
-    | false ->
-        invalidArg "file not found" |> ignore
-        ""
-
-let getInputFileName filePath (language:string) =
-    let fileInfo = new FileInfo(filePath)
-    match fileInfo.Exists with
-    | true ->
-        let fileName = fileInfo.Name.Replace(fileInfo.Extension, "")
-        let lang = sprintf ".%s" language
-        match fileName.Contains(lang) with 
-        | true ->
-            fileName.Replace(lang, "") + "."
-        | false ->
-            match fileName.ToLower().Equals(language.ToLower()) with
-            | true ->
-                ""
-            | false ->
-                fileName + "."      
-    | false ->
-        invalidArg "file not found" |> ignore
-        ""
+open Entities
 
 let getInputFileText filePath  =
     let fileInfo = new FileInfo(filePath)
@@ -63,15 +36,27 @@ let getOutputFiles sourceLanguage destinationLanguages inputFilePath =
         let regexPattern = sprintf ".%s[A-Za-z]" sourceLanguage
         match Regex.Match(fileName, regexPattern).Success with
         | true ->
-            destinationLanguages |> Array.map (fun dl -> sprintf "%s/%s.%s.json" fileInfo.DirectoryName fileName dl)
+            destinationLanguages |> Seq.map (fun dl -> sprintf "%s/%s.%s.json" fileInfo.DirectoryName fileName dl)
         | false ->
-            destinationLanguages |> Array.map (fun dl ->
+            destinationLanguages |> Seq.map (fun dl ->
                 let outputFileName = fileName.Replace(sprintf ".%s" sourceLanguage, sprintf ".%s" dl)
                 sprintf "%s/%s.json" fileInfo.DirectoryName outputFileName
                 )
     | false ->
         match fileName.ToLower().Equals(sourceLanguage.ToLower()) with
         | true ->
-            destinationLanguages |> Array.map (fun dl -> sprintf "%s/%s.json" fileInfo.DirectoryName dl)
+            destinationLanguages |> Seq.map (fun dl -> sprintf "%s/%s.json" fileInfo.DirectoryName dl)
         | false ->
-            destinationLanguages |> Array.map (fun dl -> sprintf "%s/%s.%s.json" fileInfo.DirectoryName fileName dl)
+            destinationLanguages |> Seq.map (fun dl -> sprintf "%s/%s.%s.json" fileInfo.DirectoryName fileName dl)
+
+let writeTranslationsToDisk (outputPaths: seq<string>) (translations: Translation[]) (untranslated:string) (appendComma: bool) =
+    translations |> Array.iter (fun t -> 
+        let newLine = sprintf "%s \"%s\"" untranslated t.text
+        let path = outputPaths |> Seq.find (fun p -> Regex.Match(p, sprintf ".?%s.json" t.ToLanguage).Success)
+        let writeFunc = writeToFile path
+        match appendComma with
+        | true ->
+           writeFunc (sprintf "%s," newLine)
+        | false ->
+           writeFunc newLine
+    )

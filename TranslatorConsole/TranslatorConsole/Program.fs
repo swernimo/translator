@@ -19,16 +19,16 @@ let main argv =
                 match lineNeedsToBeTranslated line with 
                 | true ->
                     let split = line.Split(':')
-                    let firstPart = sprintf "\"%s\":" split.[0]
+                    let firstPart = sprintf "\"%s\":" (split.[0].Replace("\"", ""))
                     let wordToTranslate = split.[1].Replace("\"", "")
                     match wordToTranslate.EndsWith(",") with
                     | true ->
                         let newWord = wordToTranslate.Substring(0, wordToTranslate.Length - 1)
                         let translations = translationFunc [|newWord|]
-                        writeTranslationsToDisk outputPaths translations
+                        writeTranslationsToDisk outputPaths translations firstPart true
                     | false ->
                         let translations = translationFunc [|wordToTranslate|]
-                        writeTranslationsToDisk outputPaths translations
+                        writeTranslationsToDisk outputPaths translations firstPart false
                 | false ->
                     outputPaths |> Seq.iter (fun path -> writeToFile path line)
             )
