@@ -61,7 +61,7 @@ let lineNeedsToBeTranslated line =
         match ending with
             | "{" | "}" | "}," ->
                 false
-            | "," -> 
+            | "," | "." -> 
                 true
             | _ ->
                 match Regex.Match(ending, "[A-Za-z]").Success with
