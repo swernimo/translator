@@ -74,27 +74,24 @@ let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLan
 
 
 let translate (sourceLanguage) (destinationLanguages) (wordsToTranslate:string[]) (subscriptionKey) =
-    let buildToLanguageQueryString (destinationLanguages:string[]) : string =
-        match destinationLanguages.Length > 1 with
-        | true ->
-            let queryString = destinationLanguages |> Array.reduce (fun soFar dlang -> sprintf "&to=%s" soFar + sprintf "&to=%s" dlang)
-            queryString.Replace("to=&", "")
-        | false ->
-            sprintf "&to=%s" destinationLanguages.[0]
     let buildRequestBody (wordsToTranslate:string[]) =
-        let body = wordsToTranslate |> Array.fold (fun acc (word:string) -> acc + sprintf "{\"text\": \"%s\"}," word) "" |> (fun x -> x.Substring(0, x.Length - 1))
+        let body = wordsToTranslate |> Array.fold (fun acc (word:string) -> acc + sprintf "{\"text\": \"%s\"}," word) "[" |> (fun x -> x.Substring(0, x.Length - 1) + "]")
         Encoding.ASCII.GetBytes(body)
 
+    let createWebRequest subscriptionKey (url:string) = 
+        let request = WebRequest.Create(url)
+        let bodyBytes = buildRequestBody wordsToTranslate
+        request.Method <- "POST"
+        request.ContentType <- "application/json"
+        request.ContentLength <- int64 bodyBytes.Length
+        request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey)
+        use stream = request.GetRequestStream()
+        stream.Write(bodyBytes, 0, bodyBytes.Length)
+        stream.Close()
+        request
+
     let url = sprintf "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=%s&textType=plain%s" sourceLanguage (destinationLanguages |> Array.fold (fun acc word -> acc + sprintf "&to=%s" word) "")
-    let request = WebRequest.Create(url)
-    let bodyBytes = buildRequestBody wordsToTranslate
-    request.Method <- "POST"
-    request.ContentType <- "application/json"
-    request.ContentLength <- int64 bodyBytes.Length
-    request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey)
-    use stream = request.GetRequestStream()
-    stream.Write(bodyBytes, 0, bodyBytes.Length)
-    stream.Close()
+    let request = createWebRequest subscriptionKey url
 
     let response = request.GetResponse()
     use responseStream = response.GetResponseStream()
@@ -103,4 +100,3 @@ let translate (sourceLanguage) (destinationLanguages) (wordsToTranslate:string[]
     printfn "response body: %s" text
     reader.Close()
     responseStream.Close()
-    printfn "url is: %s" url
