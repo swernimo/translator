@@ -7,6 +7,7 @@ open System.Xml
 open System.Text.RegularExpressions
 open System.Text
 open Newtonsoft.Json
+open Entities
 
 let translateJsonDocument filePath subscriptionKey sourceLanguage destinationLanguage (destinationFilePath:string) =
     let translateTextAsync lng subscrptionKey sourceLanguage word =
@@ -90,13 +91,18 @@ let translate (sourceLanguage) (destinationLanguages) (wordsToTranslate:string[]
         stream.Close()
         request
 
+    let getResponseAsString (request:WebRequest) = 
+        let response = request.GetResponse()
+        use responseStream = response.GetResponseStream()
+        use reader = new StreamReader(responseStream)
+        let text = reader.ReadToEnd()
+        reader.Close()
+        responseStream.Close()
+        text
+
     let url = sprintf "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=%s&textType=plain%s" sourceLanguage (destinationLanguages |> Array.fold (fun acc word -> acc + sprintf "&to=%s" word) "")
     let request = createWebRequest subscriptionKey url
-
-    let response = request.GetResponse()
-    use responseStream = response.GetResponseStream()
-    use reader = new StreamReader(responseStream)
-    let text = reader.ReadToEnd()
-    printfn "response body: %s" text
-    reader.Close()
-    responseStream.Close()
+    let response = getResponseAsString request
+    let x = response.Replace("[{\"translations\":", "").Substring(0, response.Length - 19)
+    let json = JsonConvert.DeserializeObject<Translation[]>(x)
+    json
