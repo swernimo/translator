@@ -9,8 +9,11 @@ open Newtonsoft.Json
 open Entities
 
 let getTranslations sourceLanguage destinationLanguages subscriptionKey wordsToTranslate =
+    let convertWord (word:string) =
+        word.Replace("&", "and").ToLower()
+
     let buildRequestBody (wordsToTranslate:string[]) =
-        let body = wordsToTranslate |> Array.fold (fun acc word -> acc + sprintf "{\"text\": \"%s\"}," word) "[" |> (fun x -> x.Substring(0, x.Length - 1) + "]")
+        let body = wordsToTranslate |> Array.fold (fun acc word -> acc + sprintf "{\"text\": \"%s\"}," (convertWord word)) "[" |> (fun x -> x.Substring(0, x.Length - 1) + "]")
         Encoding.ASCII.GetBytes(body)
 
     let createWebRequest subscriptionKey (url:string) = 
