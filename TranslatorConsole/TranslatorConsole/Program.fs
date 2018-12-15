@@ -14,6 +14,7 @@ let main argv =
             let sourceLanguage = options.sourceLanguage
             let lines = getInputFileText options.filePath
             let outputPaths = getOutputFiles sourceLanguage options.languages options.filePath
+            deleteExistingFiles outputPaths
             let translationFunc = getTranslations sourceLanguage options.languages options.key
             lines |> Array.iter (fun line ->
                 match lineNeedsToBeTranslated line with 

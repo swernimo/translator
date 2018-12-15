@@ -60,3 +60,12 @@ let writeTranslationsToDisk (outputPaths: seq<string>) (translations: Translatio
         | false ->
            writeFunc newLine
     )
+
+let deleteExistingFiles (files:seq<string>) =
+    files |> Seq.iter (fun file -> 
+        let fileInfo = new FileInfo(file)
+        match fileInfo.Exists with
+        | true ->
+            File.Delete(file)
+        | false ->
+            ())
