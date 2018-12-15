@@ -51,7 +51,7 @@ let getOutputFiles sourceLanguage destinationLanguages inputFilePath =
 
 let writeTranslationsToDisk (outputPaths: seq<string>) (translations: Translation[]) (untranslated:string) (appendComma: bool) =
     translations |> Array.iter (fun t -> 
-        let newLine = sprintf "%s \"%s\"" untranslated t.text
+        let newLine = sprintf "%s \"%s\"" untranslated (t.text.Trim())
         let path = outputPaths |> Seq.find (fun p -> Regex.Match(p, sprintf ".?%s.json" t.ToLanguage).Success)
         let writeFunc = writeToFile path
         match appendComma with

@@ -14,8 +14,10 @@
     <PackageProjectUrl>https://github.com/swernimo/translator</PackageProjectUrl>
     <RepositoryUrl>https://github.com/swernimo/translator</RepositoryUrl>
     <PackageTags>Fsharp Azure JSON Text-Translator</PackageTags>
-    <PackageReleaseNotes>Upgraded to Azure Translator Text API v3.
-Various performance improvements</PackageReleaseNotes>
+    <PackageReleaseNotes>Bug Fixes
+##deleting translated files before creating new ones
+##removing leading and trailing white space from translations before writing to disk
+##call to lower to everything before sending it to azure</PackageReleaseNotes>
     <AssemblyName>JSONTranslator</AssemblyName>
   </PropertyGroup>
 
