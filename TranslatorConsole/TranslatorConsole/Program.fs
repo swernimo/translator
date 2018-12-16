@@ -20,6 +20,8 @@ let main argv =
                 match lineNeedsToBeTranslated line with 
                 | true ->
                     let split = line.Split(':')
+                    if(split.Length <> 2) then
+                        printfn "Invalid line break inside JSON file."
                     let firstPart = sprintf "\"%s\":" (split.[0].Replace("\"", "").Trim())
                     let wordToTranslate = split.[1].Replace("\"", "")
                     match wordToTranslate.EndsWith(",") with
